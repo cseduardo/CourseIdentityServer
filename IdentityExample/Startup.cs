@@ -8,28 +8,44 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NETCore.MailKit.Extensions;
+using NETCore.MailKit.Infrastructure.Internal;
 
 namespace IdentityExample
 {
     public class Startup
     {
+        private readonly IConfiguration configuration;
+        public Startup(IConfiguration config)
+        {
+            configuration = config;
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<AppDBContext>(config=> { config.UseInMemoryDatabase("Memory"); });
+            services.AddDbContext<AppDBContext>(config => { config.UseInMemoryDatabase("Memory"); });
 
             // AddIdentity register the services
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<IdentityUser, IdentityRole>(config =>
+            {
+                config.Password.RequiredLength = 8;
+                config.SignIn.RequireConfirmedEmail = true;
+            })
                 .AddEntityFrameworkStores<AppDBContext>()
                 .AddDefaultTokenProviders();
 
-            services.ConfigureApplicationCookie(config=> {
+            services.ConfigureApplicationCookie(config =>
+            {
                 config.Cookie.Name = "Identity.Cookie";
                 config.LoginPath = "/Home/Login";
             });
+
+            services.AddMailKit(config => config.UseMailKit(configuration.GetSection("Email").Get<MailKitOptions>()));
 
             services.AddControllersWithViews();
         }
