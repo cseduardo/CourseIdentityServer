@@ -1,18 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using IdentityExample.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using NETCore.MailKit.Extensions;
-using NETCore.MailKit.Infrastructure.Internal;
+using System.Security.Claims;
 
 namespace IdentityExample
 {
@@ -45,7 +40,7 @@ namespace IdentityExample
                 config.LoginPath = "/Home/Login";
             });
 
-            services.AddMailKit(config => config.UseMailKit(configuration.GetSection("Email").Get<MailKitOptions>()));
+            
 
             services.AddControllersWithViews();
         }

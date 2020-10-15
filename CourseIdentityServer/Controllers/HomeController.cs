@@ -22,19 +22,33 @@ namespace CourseIdentityServer.Controllers
             return View();
         }
 
+        [Authorize(Policy= "Claim.DoB")]
+        public IActionResult SecretPolicy()
+        {
+            return View("Secret");
+        }
+
+        [Authorize(Roles ="Admin")]
+        public IActionResult SecretRole()
+        {
+            return View("Secret");
+        }
+
         public IActionResult Authenticate()
         {
             var grandmaClaims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Name,"Carolina"),
                 new Claim(ClaimTypes.Email,"carolina.mun@outlook.com"),
+                new Claim(ClaimTypes.DateOfBirth,"15/11/1992"),
+                new Claim(ClaimTypes.Role,"Admin"),
                 new Claim("Grandma.Says","Very nice girl")
             };
 
             var licenseClaims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Name,"Carolinne"),
-                new Claim("DrivingLicense","A+")
+                new Claim("DrivingLicense","A")
             };
 
             var grandmaIdentity = new ClaimsIdentity(grandmaClaims, "Grandma Identity");

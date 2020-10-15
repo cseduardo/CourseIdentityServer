@@ -126,6 +126,8 @@ namespace IdentityExample.Controllers
             Exception exception = default(Exception);
             try
             {
+                var getCredentials=configuration.GetSection("Email").Get<NetworkCredential>();
+                var getSMTP = configuration.GetSection("Email").Get<SmtpClient>();
                 NetworkCredential credential = new NetworkCredential();
                 credential.UserName = "eduardo.ca.se.100@gmail.com";
                 credential.Password = "L@locura1.10";

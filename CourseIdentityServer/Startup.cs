@@ -1,7 +1,10 @@
+using CourseIdentityServer.AuthorizationRequirements;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Security.Claims;
 
 namespace CourseIdentityServer
 {
@@ -16,6 +19,29 @@ namespace CourseIdentityServer
                 config.Cookie.Name = "Grandmas.Cookie";
                 config.LoginPath = "/Home/Authenticate";
             });
+
+            services.AddAuthorization(config =>
+            {
+                //var defaultAuthBuilder = new AuthorizationPolicyBuilder();
+                //var defaultAuthPolicy = defaultAuthBuilder
+                //.RequireAuthenticatedUser()
+                //.RequireClaim(ClaimTypes.DateOfBirth)
+                //.Build();
+
+                //config.DefaultPolicy = defaultAuthPolicy;
+
+                //config.AddPolicy("Claim.DoB", policyBuilder =>
+                // {
+                //     policyBuilder.RequireClaim(ClaimTypes.DateOfBirth); 
+                // });
+
+                config.AddPolicy("Claim.DoB", policyBuilder =>
+                {
+                    policyBuilder.RequireCustomClaim(ClaimTypes.DateOfBirth);
+                });
+            });
+
+            services.AddScoped<IAuthorizationHandler, CustomRequireClaimHandler>();
 
             services.AddControllersWithViews();
         }
