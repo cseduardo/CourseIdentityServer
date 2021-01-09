@@ -169,7 +169,7 @@ namespace IdentityExample.Controllers
             }
             finally
             {
-                if (exception == null)
+                if (exception != null && mailSent)
                 {
                     emailSend = true;
                 }
@@ -193,8 +193,8 @@ namespace IdentityExample.Controllers
             else
             {
                 Debug.WriteLine("Message sent.");
+                mailSent = true;
             }
-            mailSent = true;
         }
     }
 }
