@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using CourseIdentityServer.CustomPolicyProvider;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,6 +12,12 @@ namespace CourseIdentityServer.Controllers
 {
     public class HomeController : Controller
     {
+        //private readonly IAuthorizationService _authorizationService;
+
+        //public HomeController(IAuthorizationService authorizationService)
+        //{
+        //    _authorizationService = authorizationService;
+        //}
         public IActionResult Index()
         {
             return View();
@@ -22,18 +29,32 @@ namespace CourseIdentityServer.Controllers
             return View();
         }
 
-        [Authorize(Policy= "Claim.DoB")]
+        [Authorize(Policy = "Claim.DoB")]
+        //[Authorize(Policy = "SecurityLevel.5")]
         public IActionResult SecretPolicy()
         {
             return View("Secret");
         }
 
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public IActionResult SecretRole()
         {
             return View("Secret");
         }
 
+        [SecurityLevel(5)]
+        public IActionResult SecretLevel()
+        {
+            return View("Secret");
+        }
+
+        [SecurityLevel(10)]
+        public IActionResult SecretHigherLevel()
+        {
+            return View("Secret");
+        }
+
+        [AllowAnonymous]
         public IActionResult Authenticate()
         {
             var grandmaClaims = new List<Claim>()
@@ -42,6 +63,7 @@ namespace CourseIdentityServer.Controllers
                 new Claim(ClaimTypes.Email,"carolina.mun@outlook.com"),
                 new Claim(ClaimTypes.DateOfBirth,"15/11/1992"),
                 new Claim(ClaimTypes.Role,"Admin"),
+                new Claim(DynamicPolicies.SECURE_LEVEL,"7"),
                 new Claim("Grandma.Says","Very nice girl")
             };
 
@@ -59,6 +81,24 @@ namespace CourseIdentityServer.Controllers
             HttpContext.SignInAsync(userPrincipal);
 
             return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> DoStuff(
+            [FromServices] IAuthorizationService authorizationService)
+        {
+            //we are doing stuff here
+
+            var builder = new AuthorizationPolicyBuilder("Schema");
+            var customPolicy = builder.RequireClaim("Hello").Build();
+
+            var authResult = await authorizationService.AuthorizeAsync(HttpContext.User, customPolicy);
+
+            if (authResult.Succeeded)
+            {
+                return View("Index");
+            }
+
+            return View("Index");
         }
     }
 }
