@@ -63,6 +63,12 @@ namespace CourseIdentityServer
                 //global authorization filter
                 config.Filters.Add(new AuthorizeFilter(defaultAuthPolicy));
             });
+
+            services.AddRazorPages().AddRazorPagesOptions(config =>
+            {
+                config.Conventions.AuthorizePage("/Razor/Secured");
+                config.Conventions.AuthorizePage("/Razor/Policy", "Admin ");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -84,6 +90,7 @@ namespace CourseIdentityServer
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
+                endpoints.MapRazorPages();
             });
         }
     }
