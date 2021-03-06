@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.Extensions;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -8,7 +9,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Client.Controllers
+namespace Server.Controllers
 {
     public class OAuthController : Controller
     {
@@ -84,6 +85,16 @@ namespace Client.Controllers
 
             await Response.Body.WriteAsync(responseBytes,0,responseBytes.Length);
             return Redirect(redirectUri);
+        }
+
+        [Authorize]
+        public IActionResult Validate()
+        {
+            if(HttpContext.Request.Query.TryGetValue("access_token",out var accessToken))
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
     }
 }
