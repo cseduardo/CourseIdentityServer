@@ -1,4 +1,5 @@
 using API.AuthRequirement;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,7 +19,9 @@ namespace API
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication();
+            services.AddAuthentication()
+                .AddScheme<AuthenticationSchemeOptions,CustomAuthenticationHandler>("DefaultAuth",null);
+
             services.AddAuthorization(config=> 
             {
                 var defaultAuthBuilder = new AuthorizationPolicyBuilder();

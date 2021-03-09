@@ -25,7 +25,7 @@ namespace Server.Controllers
             var query = new QueryBuilder();
             query.Add("redirectUri", redirect_uri);
             query.Add("state", state);
-            return View(model:query.ToString());
+            return View(model: query.ToString());
         }
 
         [HttpPost]
@@ -46,8 +46,8 @@ namespace Server.Controllers
             string grant_type, //flow of access_token request
             string code, //confirmation of the authentication process
             string redirectUri,
-            string client_id
-            )
+            string client_id,
+            string refresh_token)
         {
             //some mechanism for validating the code
             var claims = new[]
@@ -67,7 +67,7 @@ namespace Server.Controllers
                 Constants.ISSUER, Constants.AUDIANCE,
                 claims,
                 notBefore: DateTime.UtcNow,
-                expires: DateTime.UtcNow.AddHours(1),
+                expires: grant_type == "refresh_token" ? DateTime.UtcNow.AddMinutes(5) : DateTime.UtcNow.AddMilliseconds(1),
                 signingCredentials
                 );
 
@@ -78,19 +78,20 @@ namespace Server.Controllers
                 access_token,
                 token_type = "Bearer",
                 raw_claim = "oauth_tutorial",
+                refresh_token="RefreshTokenSampleValueSomething151192"
             };
 
             var responseJson = JsonConvert.SerializeObject(responseObject);
             var responseBytes = Encoding.UTF8.GetBytes(responseJson);
 
-            await Response.Body.WriteAsync(responseBytes,0,responseBytes.Length);
+            await Response.Body.WriteAsync(responseBytes, 0, responseBytes.Length);
             return Redirect(redirectUri);
         }
 
         [Authorize]
         public IActionResult Validate()
         {
-            if(HttpContext.Request.Query.TryGetValue("access_token",out var accessToken))
+            if (HttpContext.Request.Query.TryGetValue("access_token", out var accessToken))
             {
                 return Ok();
             }

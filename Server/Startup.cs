@@ -37,7 +37,8 @@ namespace Server
                     };
 
                     config.TokenValidationParameters = new TokenValidationParameters()
-                    {
+                    { 
+                        ClockSkew=TimeSpan.Zero,
                         ValidIssuer=Constants.ISSUER,
                         ValidAudience=Constants.AUDIANCE,
                         IssuerSigningKey=key
