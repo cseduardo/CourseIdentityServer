@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IdentityServer
+namespace MyClient
 {
     public class Startup
     {
@@ -16,12 +16,21 @@ namespace IdentityServer
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddIdentityServer().
-                AddInMemoryApiResources(Configuration.GetApis()).
-                AddInMemoryIdentityResources(Configuration.GetIdentityResources()).
-                AddInMemoryClients(Configuration.GetClients()).
-                AddInMemoryApiScopes(Configuration.GetScopes()).
-                AddDeveloperSigningCredential();
+            services.AddAuthentication(config=> 
+            {
+                config.DefaultScheme = "Cookie";
+                config.DefaultChallengeScheme = "oidc";
+            })
+                .AddCookie("Cookie")
+                .AddOpenIdConnect("oidc",config=> 
+                {
+                    config.Authority = "https://localhost:44332/";
+                    config.ClientId = "client_id_mvc";
+                    config.ClientSecret = "client_secret_mvc";
+                    config.SaveTokens = true;
+
+                    config.ResponseType = "code";
+                });
 
             services.AddControllersWithViews();
         }
@@ -36,7 +45,9 @@ namespace IdentityServer
 
             app.UseRouting();
 
-            app.UseIdentityServer();
+            app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
