@@ -1,4 +1,4 @@
-﻿@model Register
+﻿@model SignIn
 <form asp-controller="Auth" asp-action="SignIn" method="post">
     <input type="hidden" asp-for="ReturnUrl" />
     <div>
@@ -17,9 +17,11 @@
         <span asp-validation-for="ConfirmPassword"></span>
     </div>
     <div>
-        <button type="submit">Sign In</button>
+        <button type="submit">Sign Up</button>
+    </div>
+    <div>
+        <a asp-controller="Auth" asp-action="Login" 
+           asp-route-returnUrl="@Model.ReturnUrl">Back To Login</a>
     </div>
 </form>
-<div>
-    <a asp-controller="Auth" asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl">Back To Login</a>
-</div>
+

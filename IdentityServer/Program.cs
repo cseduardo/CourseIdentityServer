@@ -1,13 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace IdentityServer
 {
@@ -21,8 +15,8 @@ namespace IdentityServer
             {
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
-                var user = new IdentityUser("bob");
-                userManager.CreateAsync(user, "password").GetAwaiter().GetResult();
+                var user = new IdentityUser("carolina");
+                userManager.CreateAsync(user, "Abcd1234#").GetAwaiter().GetResult();
             }
 
             host.Run();

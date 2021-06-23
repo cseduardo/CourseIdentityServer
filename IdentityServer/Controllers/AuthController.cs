@@ -22,21 +22,23 @@ namespace IdentityServer.Controllers
         [HttpGet]
         public IActionResult SignIn(string returnUrl)
         {
-            return View(new Register { ReturnUrl = returnUrl });
+            var model = new SignIn { ReturnUrl = returnUrl };
+            return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> SignIn(Register register)
+        public async Task<IActionResult> SignIn(SignIn register)
         {
             if (!ModelState.IsValid)
             {
-                return View();
+                return View(register);
             }
             var user = new IdentityUser(register.Username);
-            var result = await userManager.CreateAsync(user, "password");
+            var result = await userManager.CreateAsync(user, register.Password);
             if (result.Succeeded)
             {
                 await signInManager.SignInAsync(user, default(bool));
+                return Redirect(register.ReturnUrl);
             }
             else if (result.Errors.Any())
             {

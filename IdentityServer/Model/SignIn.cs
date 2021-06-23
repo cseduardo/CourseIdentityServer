@@ -2,7 +2,7 @@
 
 namespace IdentityServer.Model
 {
-    public  class Register
+    public  class SignIn
     {
         [Required]
         public string Username { get; set; }
@@ -13,6 +13,6 @@ namespace IdentityServer.Model
         [DataType(DataType.Password)]
         [Compare("Password")]
         public string ConfirmPassword { get; set; }
-        public string ReturnUrl { get; set; }
+        public string? ReturnUrl { get; set; }
     }
 }
