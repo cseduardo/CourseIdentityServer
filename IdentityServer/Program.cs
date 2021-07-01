@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Security.Claims;
 
 namespace IdentityServer
 {
@@ -17,6 +18,8 @@ namespace IdentityServer
 
                 var user = new IdentityUser("carolina");
                 userManager.CreateAsync(user, "Abcd1234#").GetAwaiter().GetResult();
+                userManager.AddClaimAsync(user, new Claim("rc.grandma","big.cookie")).GetAwaiter().GetResult();
+                userManager.AddClaimAsync(user, new Claim("rc.api.grandma","big.api.cookie")).GetAwaiter().GetResult();
             }
 
             host.Run();
