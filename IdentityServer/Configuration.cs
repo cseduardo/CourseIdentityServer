@@ -61,7 +61,7 @@ namespace IdentityServer
                     new Secret("client_secret_mvc".ToSha256())
                 },
 
-                RedirectUris={ "https://localhost:44344/signin-oidc" },
+                RedirectUris={ "https://localhost:44315/signin-oidc" },
 
                 AllowedGrantTypes=GrantTypes.Code,
 
@@ -77,6 +77,19 @@ namespace IdentityServer
                 //puts all the claims in the id token
                 //AlwaysIncludeUserClaimsInIdToken=true,
                 AllowOfflineAccess=true,//activa el refreshToken
+                RequireConsent=default(bool)
+            },
+            new Client
+            {
+                ClientId="client_id_js",
+                AllowedGrantTypes=GrantTypes.Implicit,
+                RedirectUris={ "https://localhost:44324/signin" },
+                AllowedScopes=
+                {
+                    "ApiOne",
+                    IdentityServerConstants.StandardScopes.OpenId,
+                },
+                AllowAccessTokensViaBrowser=true,
                 RequireConsent=default(bool)
             }
         };
